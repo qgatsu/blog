@@ -117,7 +117,116 @@ https://huggingface.co/datasets/mstz/heloc
 
 解釈は概ね直感的で妥当に見えます。ただこれだけ見ても実際の施策に結びつけるのは難しいでしょう。例えば今回の場合 **「信用リスク推定スコアを上げよう」や「過去の問題取引をなかったことにしましょう」は変更できないステータスに介入しようとしているため施策としては不適切** です。
 
+このように特徴量重要度はモデルのふるまいを定量的に表現することはできますが、定性的な施策に結びつけるためにはここからもう1つステップが必要です。
+
 ## DiCEを使ってみる。
-ここからは実際に
+ここからは実際にDiCEを使って分析をしていきます。
+
+### DiCEをインストールする
+```python
+%pip install dice-ml
+```
+### DiCEにモデルラッパーとデータラッパーを渡す
+データロード後、既定のラッパーでモデルとデータを渡します。
+
+```python
+class DiceReadyModel:
+    def __init__(self, model, feature_names, threshold):
+        self.model = model
+        self.feature_names = feature_names
+        self.threshold = threshold
+        self.classes_ = np.array([0, 1])
+
+    def _prepare(self, input_df: pd.DataFrame) -> pd.DataFrame:
+        return input_df[self.feature_names].copy()
+
+    def predict_proba(self, input_df: pd.DataFrame) -> np.ndarray:
+        X = self._prepare(input_df)
+        return self.model.predict_proba(X)
+
+    def predict(self, input_df: pd.DataFrame) -> np.ndarray:
+        positive_proba = self.predict_proba(input_df)[:, 1]
+        return (positive_proba >= self.threshold).astype(int)
+
+
+dice_ready_model = DiceReadyModel(
+    model=model,
+    feature_names=feature_cols,
+    threshold=best_threshold,
+)
+
+dice_data = dice_ml.Data(
+    dataframe=model_train_df,
+    continuous_features=feature_cols,
+    outcome_name=target_col,
+)
+
+dice_model = dice_ml.Model(
+    model=dice_ready_model,
+    backend="sklearn",
+    model_type="classifier",
+)
+
+dice = dice_ml.Dice(dice_data, dice_model, method="genetic")
+```
+ここで、引数 method は反実仮想生成の方法を表しています。
+| 手法名 | メリット | デメリット |
+|---|---|---|
+| `genetic` | 連続値・複雑な条件でも柔軟に探索しやすい。 | 実行時間が長くなりやすい。 |
+| `random` | 実装や挙動が直感的でわかりやすい。 | 良い反実仮想を安定して見つけにくい。|
+| `kdtree` | 学習データに近い候補を探すため、実在しそうな反実仮想を得やすい。 | 学習データ内に適切な近傍がないと候補が見つかりにくい。 |
+
+今回はデータ数もそこまで大きいわけではないのでgeneticを使っています。
+
+### 介入特徴量の設定
+DiCEは探索時に変動させる特徴量を事前に選ぶことができるため、非現実的な反実仮想シナリオが生成されないように制御することが可能です。本記事では以降介入特徴量と呼称します。
+
+各介入特徴量には値の変動に制約をかけることもでき、実務上の制約を満たさない値や定義上あり得ない値に変動しないようにすることが可能です。
+
+今回は複数の特徴量に「値が増加方向に動かないようにする制約」と「値が０を下回らない制約」をかけました。
+
+```python
+actionable_features = [
+    "net_fraction_of_revolving_burden",
+    "net_fraction_of_installment_burden",
+    "percentage_trades_with_balance",
+    "nr_inquiries_in_last_6_months_log1p",
+    "high_ratio_bank_share_log1p",
+]
+
+monotone_decrease_features = [
+    "percentage_trades_with_balance",
+    "nr_inquiries_in_last_6_months_log1p",
+    "high_ratio_bank_share_log1p",
+]
+monotone_increase_features = []
+
+domain_bounds = {
+    "net_fraction_of_revolving_burden": (0.0, None),
+    "net_fraction_of_installment_burden": (0.0, None),
+    "percentage_trades_with_balance": (0.0, 100.0),
+    "nr_inquiries_in_last_6_months_log1p": (0.0, None),
+    "high_ratio_bank_share_log1p": (0.0, None),
+}
+
+```
+
+### 実験設定
+今回は以下の３つのケースで比較実験を行います。
+
+（画像）
+
+| 予測モデルの出力（リスク確率） | 位置づけ |
+|---:|---|
+| 0.870 | 明確に高リスク側にあるケース |
+| 0.622 | 中程度に高リスクなケース |
+| 0.599 | 高リスク判定ではあるが、しきい値に比較的近いケース |
+
+### 結果
+#### 明確に高リスクのケース
+
+
+
+
 
 
