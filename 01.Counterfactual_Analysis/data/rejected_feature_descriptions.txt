@@ -1,0 +1,19 @@
+Rejected dataset feature descriptions
+
+Features
+- Amount Requested: 借り手が申込時に希望した借入金額。申込条件の中心となる金額列。
+- Application Date: 借り手が申込を行った日付。時期要因や制度変更の影響を見る基準になる。
+- Loan Title: 借り手が申込時に入力したローンタイトル。用途や資金使途の自由記述に近い補助情報。
+- Risk_Score: 申込者に付与された信用リスクスコア。2013年11月5日より前の申込では FICO スコア、以降は Vantage スコアとされており、期間をまたぐと同一尺度とはみなしにくい。
+- Debt-To-Income Ratio: 借り手の月次債務返済額合計を、住宅ローンと今回申込の LC ローンを除いた債務ベースで自己申告月収に対して割った比率。既存債務負担の強さを示す。
+- Zip Code: 申込時に借り手が申告した郵便番号の先頭3桁。細かすぎない地域情報を表す。
+- State: 申込時に借り手が申告した州。
+- Employment Length: 勤続年数。0 から 10 の範囲を想定し、0 は 1 年未満、10 は 10 年以上を意味する。
+- Policy Code: 公開ポリシー区分を表す管理コード。辞書上は `1=publicly available`、`2=new products not publicly available`。
+
+Notes
+- `Amount Requested`、`Debt-To-Income Ratio`、`Employment Length` は申込時点で解釈しやすく、施策説明にも比較的つなげやすい。
+- `Risk_Score` は期間によって FICO と Vantage が混在するため、`accepted` 側の `fico_range_low/high` と単純に同列対応させるのは危険。
+- `Loan Title` は自由記述に近く、前処理なしでそのまま学習に入れるのは難しい。必要なら用途カテゴリへの正規化やテキスト特徴化が必要。
+- `Zip Code` と `State` は地域性を反映するが、地域バイアスや説明責任の観点で使い方に注意が必要。
+- `Policy Code` は制度や商品区分を表す管理列に近く、予測に有効でも施策変数としての解釈は弱い。

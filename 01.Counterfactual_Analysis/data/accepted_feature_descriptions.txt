@@ -1,0 +1,170 @@
+Accepted dataset feature descriptions
+
+Target-related / outcome columns
+- loan_status: ローンの現在ステータス。
+- funded_amnt: その時点で実際に実行された貸付金額。
+- funded_amnt_inv: 投資家が拠出した実行金額。
+- installment: ローン実行時の月次返済額。
+- out_prncp: 残存元本。
+- out_prncp_inv: 投資家持分に対応する残存元本。
+- total_pymnt: これまでの累計返済額。
+- total_pymnt_inv: 投資家持分に対応する累計返済額。
+- total_rec_prncp: これまでに回収した元本。
+- total_rec_int: これまでに回収した利息。
+- total_rec_late_fee: これまでに回収した遅延損害金。
+- recoveries: 貸倒後に回収した総額。
+- collection_recovery_fee: 貸倒後回収に伴う手数料。
+- last_pymnt_d: 最終返済月。
+- last_pymnt_amnt: 最終返済金額。
+- next_pymnt_d: 次回返済予定日。
+- last_credit_pull_d: 最終信用照会月。
+- last_fico_range_high: 直近で取得した FICO レンジの上限。
+- last_fico_range_low: 直近で取得した FICO レンジの下限。
+
+Application / borrower profile columns
+- id: Lending Club が付与したローン ID。
+- member_id: 借り手会員 ID。
+- loan_amnt: 申込時の希望借入額。
+- term: 返済期間。通常は 36 か月または 60 か月。
+- int_rate: 適用金利。
+- grade: Lending Club が付与したローングレード。
+- sub_grade: Lending Club が付与したサブグレード。
+- emp_title: 申込時の職種名。
+- emp_length: 勤続年数。
+- home_ownership: 住宅保有状況。辞書上の代表値は `RENT`、`OWN`、`MORTGAGE`、`OTHER`。
+- annual_inc: 自己申告の年収。
+- verification_status: 所得確認の実施状況。
+- issue_d: ローン実行月。厳密には申込日ではなく、資金実行に至った月を表す。
+- pymnt_plan: 支払計画の有無。
+- url: Lending Club 上の案件 URL。
+- desc: 借り手が記入した説明文。
+- purpose: 借入目的カテゴリ。
+- title: 借入タイトル。
+- zip_code: 郵便番号上3桁ベースの地域情報。
+- addr_state: 居住州。
+- dti: 負債所得比率。
+- earliest_cr_line: 最初の信用口座が開設された月。
+- fico_range_low: ローン実行時点で属している FICO レンジの下限。
+- fico_range_high: ローン実行時点で属している FICO レンジの上限。
+- initial_list_status: 初期掲載ステータス。
+- application_type: 単独申込か共同申込かを示す区分。
+- policy_code: 審査ポリシーや制度区分を示すコード。辞書上は `1=publicly available`、`2=new products not publicly available`。
+- disbursement_method: 融資実行方法。
+
+Credit history / delinquency columns
+- delinq_2yrs: 過去 2 年の 30 日以上延滞件数。
+- inq_last_6mths: 過去 6 か月の信用照会件数。
+- mths_since_last_delinq: 直近延滞からの経過月数。
+- mths_since_last_record: 直近の公的記録からの経過月数。
+- open_acc: 現在のオープン口座数。
+- pub_rec: 事故情報を含む公的記録件数。
+- revol_bal: リボルビング残高総額。
+- revol_util: リボルビング利用率。
+- total_acc: 信用ファイル上の口座総数。
+- collections_12_mths_ex_med: 直近 12 か月の回収記録件数（医療債務を除く）。
+- mths_since_last_major_derog: 直近の重大な延滞からの経過月数。
+- acc_now_delinq: 現在延滞中の口座数。
+- tot_coll_amt: これまでに発生した回収総額。
+- tot_cur_bal: 全口座の現在残高総額。
+- open_acc_6m: 直近 6 か月で開かれた口座数。
+- open_act_il: 現在アクティブな分割払い口座数。
+- open_il_12m: 直近 12 か月で開かれた分割払い口座数。
+- open_il_24m: 直近 24 か月で開かれた分割払い口座数。
+- mths_since_rcnt_il: 直近の分割払い口座開設からの経過月数。
+- total_bal_il: 分割払い口座の残高総額。
+- il_util: 分割払い口座の利用率。
+- open_rv_12m: 直近 12 か月で開かれたリボ口座数。
+- open_rv_24m: 直近 24 か月で開かれたリボ口座数。
+- max_bal_bc: 銀行カード口座の最大残高。
+- all_util: 全取引の利用率。
+- total_rev_hi_lim: リボルビング枠の総上限。
+- inq_fi: 個人向け金融照会件数。
+- total_cu_tl: 金融取引件数。
+- inq_last_12m: 直近 12 か月の信用照会件数。
+- acc_open_past_24mths: 直近 24 か月で開設された口座数。
+- avg_cur_bal: 全口座の平均残高。
+- bc_open_to_buy: 銀行カードの利用可能残高。
+- bc_util: 銀行カード利用率。
+- chargeoff_within_12_mths: 直近 12 か月の貸倒件数。
+- delinq_amnt: 現在延滞している金額。
+- mo_sin_old_il_acct: 最も古い分割払い口座の開設からの経過月数。
+- mo_sin_old_rev_tl_op: 最も古いリボ口座の開設からの経過月数。
+- mo_sin_rcnt_rev_tl_op: 直近のリボ口座開設からの経過月数。
+- mo_sin_rcnt_tl: 直近口座開設からの経過月数。
+- mort_acc: 住宅ローン口座数。
+- mths_since_recent_bc: 直近銀行カード口座開設からの経過月数。
+- mths_since_recent_bc_dlq: 直近銀行カード延滞からの経過月数。
+- mths_since_recent_inq: 直近信用照会からの経過月数。
+- mths_since_recent_revol_delinq: 直近リボ延滞からの経過月数。
+- num_accts_ever_120_pd: 過去に 120 日以上延滞したことのある口座数。
+- num_actv_bc_tl: 現在アクティブな銀行カード口座数。
+- num_actv_rev_tl: 現在アクティブなリボ口座数。
+- num_bc_sats: 正常な銀行カード口座数。
+- num_bc_tl: 銀行カード口座数。
+- num_il_tl: 分割払い口座数。
+- num_op_rev_tl: オープンなリボ口座数。
+- num_rev_accts: リボ口座数。
+- num_rev_tl_bal_gt_0: 残高があるリボ口座数。
+- num_sats: 正常な口座数。
+- num_tl_120dpd_2m: 直近 2 か月更新ベースで現在 120 日以上延滞中の口座数。
+- num_tl_30dpd: 直近 2 か月更新ベースで現在 30 日延滞中の口座数。
+- num_tl_90g_dpd_24m: 直近 24 か月で 90 日以上延滞した口座数。
+- num_tl_op_past_12m: 直近 12 か月で開設された口座数。
+- pct_tl_nvr_dlq: 一度も延滞していない取引の割合。
+- percent_bc_gt_75: 利用率 75% 超の銀行カード口座割合。
+- pub_rec_bankruptcies: 破産に関する公的記録件数。
+- tax_liens: 税差押え件数。
+- tot_hi_cred_lim: 総与信枠。
+- total_bal_ex_mort: 住宅ローンを除く残高総額。
+- total_bc_limit: 銀行カード与信枠総額。
+- total_il_high_credit_limit: 分割払い口座の総与信枠。
+
+Joint application columns
+- annual_inc_joint: 共同申込者を含む合算年収。
+- dti_joint: 共同申込者ベースの負債所得比率。
+- verification_status_joint: 共同申込年収の確認状況。
+- revol_bal_joint: 共同申込者を含むリボ残高合計。
+- sec_app_fico_range_low: 第二申込者の FICO レンジ下限。
+- sec_app_fico_range_high: 第二申込者の FICO レンジ上限。
+- sec_app_earliest_cr_line: 第二申込者の最初の信用口座開設時期。
+- sec_app_inq_last_6mths: 第二申込者の過去 6 か月照会件数。
+- sec_app_mort_acc: 第二申込者の住宅ローン口座数。
+- sec_app_open_acc: 第二申込者のオープン口座数。
+- sec_app_revol_util: 第二申込者のリボ利用率。
+- sec_app_open_act_il: 第二申込者のアクティブな分割払い口座数。
+- sec_app_num_rev_accts: 第二申込者のリボ口座数。
+- sec_app_chargeoff_within_12_mths: 第二申込者の直近 12 か月貸倒件数。
+- sec_app_collections_12_mths_ex_med: 第二申込者の直近 12 か月回収記録件数。
+- sec_app_mths_since_last_major_derog: 第二申込者の重大延滞からの経過月数。
+
+Hardship / settlement columns
+- hardship_flag: ハードシッププラン利用中かどうかのフラグ。
+- hardship_type: ハードシッププランの種別。
+- hardship_reason: ハードシッププラン提供理由。
+- hardship_status: ハードシッププランの状態。
+- deferral_term: ハードシップで返済軽減が認められる月数。
+- hardship_amount: ハードシップ期間中に約束された月次支払額。
+- hardship_start_date: ハードシップ開始日。
+- hardship_end_date: ハードシップ終了日。
+- payment_plan_start_date: ハードシップ支払計画の初回期日。
+- hardship_length: ハードシップ期間の月数。
+- hardship_dpd: ハードシップ開始時点の延滞日数。
+- hardship_loan_status: ハードシップ開始時点のローンステータス。
+- orig_projected_additional_accrued_interest: ハードシップ計画で当初見込まれた追加利息額。
+- hardship_payoff_balance_amount: ハードシップ開始時点の完済必要額。
+- hardship_last_payment_amount: ハードシップ開始時点の直近支払額。
+- debt_settlement_flag: 債務整理会社と和解手続中かどうかのフラグ。
+- debt_settlement_flag_date: 債務整理フラグが直近で立った日付。
+- settlement_status: 和解プランの状態。
+- settlement_date: 和解合意日。
+- settlement_amount: 和解金額。
+- settlement_percentage: 完済必要額に対する和解金額割合。
+- settlement_term: 和解プラン月数。
+
+Notes
+- このファイルは `/data/Lending Club Data Dictionary Approved.csv` を参考に、`accepted_2007_to_2018Q4.csv.gz` の列を簡潔に日本語化したものです。
+- 補助的に `/data/Lending Club Data Dictionary Notes.csv` も参照し、申込時点列と事後列の区別に必要な注記を反映しています。
+- `accepted` には申込時点情報だけでなく、融資実行後や返済後にしか分からない列が多く含まれます。
+- `loan_status`、`funded_amnt`、`total_pymnt`、`recoveries` などは結果情報に近く、申込時点の可否判定モデルへ入れると情報リークになる可能性があります。
+- `issue_d` は `rejected` 側の `Application Date` と完全に同義ではありません。前者は融資実行月、後者は申込日です。
+- `fico_range_low/high` は FICO スコアの区間情報であり、`rejected` 側の `Risk_Score` と同一指標とは限りません。

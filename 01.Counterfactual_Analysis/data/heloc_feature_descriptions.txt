@@ -1,0 +1,30 @@
+HELOC dataset feature descriptions
+
+注意
+- 一部の列では負の値が「該当なし」や「情報なし」を表すことがあります。
+
+Features
+- estimate_of_risk: 申込者の信用リスクの推定スコア。大きいほど低リスク寄りと解釈されることが多いです。
+- months_since_first_trade: 最初の信用取引を開始してからの経過月数。信用履歴の長さを表します。
+- months_since_last_trade: 直近の信用取引からの経過月数。
+- average_duration_of_resolution: 口座や取引の平均継続期間を表す指標です。
+- number_of_satisfactory_trades: 問題なく維持されている取引口座の件数。
+- nr_trades_insolvent_for_over_60_days: 60日超の延滞や債務不履行があった取引件数。
+- nr_trades_insolvent_for_over_90_days: 90日超の延滞や債務不履行があった取引件数。
+- percentage_of_legal_trades: 重大な問題のない正常取引の割合。
+- months_since_last_illegal_trade: 直近の問題取引からの経過月数。
+- maximum_illegal_trades_over_last_year: 過去1年で観測された問題取引数の最大値。
+- maximum_illegal_trades: 観測期間全体での問題取引数の最大値。
+- nr_total_trades: 総取引件数。
+- nr_trades_initiated_in_last_year: 過去1年に新しく開始した取引件数。
+- percentage_of_installment_trades: 分割払い型取引の割合。
+- months_since_last_inquiry_not_recent: 最近分を除いた信用照会からの経過月数を表す指標です。
+- nr_inquiries_in_last_6_months: 過去6か月の信用照会件数。
+- nr_inquiries_in_last_6_months_not_recent: 過去6か月のうち、ごく直近分を除いた信用照会件数。
+- net_fraction_of_revolving_burden: リボルビング型口座の負担度合いを表す比率的な指標です。
+- net_fraction_of_installment_burden: 分割払い型口座の負担度合いを表す比率的な指標です。
+- nr_revolving_trades_with_balance: 残高が残っているリボルビング型口座数。
+- nr_installment_trades_with_balance: 残高が残っている分割払い型口座数。
+- nr_banks_with_high_ratio: 利用率や負担率が高い銀行系口座の件数。
+- percentage_trades_with_balance: 残高がある取引の割合。
+- is_at_risk: 目的変数。1 は高リスク、0 は低リスクを表します。

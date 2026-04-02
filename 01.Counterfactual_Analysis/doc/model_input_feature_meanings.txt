@@ -1,0 +1,67 @@
+ローン予測モデルの入力特徴量の意味
+
+参照元ノートブック
+- /home/kohei/WorkSpace/blog/01.Counterfactual_Analysis/01.loan_preprocess.ipynb
+
+最終的なモデル入力の概要
+- 最終特徴量数は 55 列です。
+- 前処理後にモデル入力として残る列は以下です。
+  `FICO_risk_score`
+  `dti_log1p`
+  `employment_length_ordinal`
+  `requested_loan_amount`
+  `state_*` の one-hot 列群（51 列）
+
+各特徴量の意味
+
+1. `FICO_risk_score`
+- 借り手の信用スコアを表す特徴量です。
+- 採択データでは `fico_range_low` と `fico_range_high` の平均で作成しています。
+- 否決データでは `Risk_Score` をそのまま使っています。
+- 値が大きいほど、一般には信用力が高いことを表します。
+
+2. `dti_log1p`
+- 返済負担率 `dti` を対数変換した特徴量です。
+- 元の `dti` 列に対して `log1p(max(dti, 0))` を適用して作成しています。
+- 歪みの大きい分布を圧縮しつつ、大小関係は保つための変換です。
+- 値が大きいほど、所得に対する負債負担が大きいことを表します。
+
+3. `employment_length_ordinal`
+- 勤続年数を順序付きの数値に変換した特徴量です。
+- 元の `employment_length` 列を以下の対応で符号化しています。
+  `< 1 year` = 0
+  `1 year` = 1
+  `2 years` = 2
+  `3 years` = 3
+  `4 years` = 4
+  `5 years` = 5
+  `6 years` = 6
+  `7 years` = 7
+  `8 years` = 8
+  `9 years` = 9
+  `10+ years` = 10
+- 値が大きいほど、勤続年数が長いことを表します。
+
+4. `requested_loan_amount`
+- 申込時の希望借入額を表す特徴量です。
+- 採択データでは `loan_amnt` から作成しています。
+- 否決データでは `Amount Requested` から作成しています。
+- 値が大きいほど、希望している借入金額が大きいことを表します。
+
+5. `state_*` の one-hot 列群
+- 申込者の州を表すカテゴリ変数 `state` を one-hot エンコーディングした列群です。
+- `pd.get_dummies(..., prefix="state")` により作成しています。
+- 各列は「その申込者がその州に属するか」を表します。
+- 値の意味は以下です。
+  `1` = その州に属する
+  `0` = その州ではない
+- ノートブックでは以下の 51 列が作られています。
+  `state_AK`, `state_AL`, `state_AR`, `state_AZ`, `state_CA`, `state_CO`, `state_CT`, `state_DC`, `state_DE`, `state_FL`, `state_GA`, `state_HI`, `state_IA`, `state_ID`, `state_IL`, `state_IN`, `state_KS`, `state_KY`, `state_LA`, `state_MA`, `state_MD`, `state_ME`, `state_MI`, `state_MN`, `state_MO`, `state_MS`, `state_MT`, `state_NC`, `state_ND`, `state_NE`, `state_NH`, `state_NJ`, `state_NM`, `state_NV`, `state_NY`, `state_OH`, `state_OK`, `state_OR`, `state_PA`, `state_RI`, `state_SC`, `state_SD`, `state_TN`, `state_TX`, `state_UT`, `state_VA`, `state_VT`, `state_WA`, `state_WI`, `state_WV`, `state_WY`
+
+元列からの置き換え
+- `dti` は `dti_log1p` に置き換えられています。
+- `employment_length` は `employment_length_ordinal` に置き換えられています。
+- `state` は `state_*` の one-hot 列群に置き換えられています。
+
+補足
+- 目的変数は `is_rejected` ですが、これはモデル入力特徴量には含まれません。
