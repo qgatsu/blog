@@ -181,6 +181,15 @@ dice = dice_ml.Dice(dice_data, dice_model, method="genetic")
 ### 介入特徴量の設定
 DiCEは探索時に変動させる特徴量を事前に選ぶことができるため、非現実的な反実仮想シナリオが生成されないように制御することが可能です。本記事では以降介入特徴量と呼称します。
 
+各介入特徴の意味を以下に示します。
+
+| 特徴量 | 意味 |
+|---|---|
+| `net_fraction_of_revolving_burden` | リボルビング系与信の利用負担率 |
+| `net_fraction_of_installment_burden` | 分割払い系与信の利用負担率 |
+| `percentage_trades_with_balance` | 残高が残っている取引の比率 |
+| `high_ratio_bank_share_log1p` | 高利用率状態にある銀行系取引の比率 |
+
 各介入特徴量には値の変動に制約をかけることもでき、実務上の制約を満たさない値や定義上あり得ない値に変動しないようにすることが可能です。
 
 今回は複数の特徴量に「値が増加方向に動かないようにする制約」と「値が０を下回らない制約」をかけました。
@@ -190,13 +199,11 @@ actionable_features = [
     "net_fraction_of_revolving_burden",
     "net_fraction_of_installment_burden",
     "percentage_trades_with_balance",
-    "nr_inquiries_in_last_6_months_log1p",
     "high_ratio_bank_share_log1p",
 ]
 
 monotone_decrease_features = [
     "percentage_trades_with_balance",
-    "nr_inquiries_in_last_6_months_log1p",
     "high_ratio_bank_share_log1p",
 ]
 monotone_increase_features = []
@@ -205,28 +212,90 @@ domain_bounds = {
     "net_fraction_of_revolving_burden": (0.0, None),
     "net_fraction_of_installment_burden": (0.0, None),
     "percentage_trades_with_balance": (0.0, 100.0),
-    "nr_inquiries_in_last_6_months_log1p": (0.0, None),
     "high_ratio_bank_share_log1p": (0.0, None),
 }
 
 ```
 
+### 反実仮想生成の設定
+反実仮想の生成時には、目標クラス、生成件数、到達判定のしきい値などを以下のように設定します。
+
+```python
+desired_risk_class = 0
+
+case_generation_config = {
+    "features": actionable_features,
+    "total_CFs": 3,
+    "diversity_weight": 20.0,
+    "proximity_weight": 0.5,
+    "stopping_threshold": best_threshold,
+}
+
+case_counterfactuals = dice.generate_counterfactuals(
+    query_instances=case_query,
+    total_CFs=case_generation_config["total_CFs"],
+    desired_class=desired_risk_class,
+    features_to_vary=case_generation_config["features"],
+    permitted_range=case_permitted_range,
+    stopping_threshold=case_generation_config["stopping_threshold"],
+    diversity_weight=case_generation_config["diversity_weight"],
+    proximity_weight=case_generation_config["proximity_weight"],
+)
+```
+
+今回は `desired_class=0` として、リスク有判定のサンプルを承認側に反転させる設定にしています。また、`stopping_threshold=best_threshold` とすることで、到達判定もモデル本体のしきい値に揃えています。
+
 ### 実験設定
-今回は以下の３つのケースで比較実験を行います。
+今回はモデルの best threshold である `0.37` を判定しきい値として用い、陽性判定サンプルの中から `risk_proba` が `0.8`、`0.6`、`0.4` に近い３ケースを選んで比較します。
 
 （画像）
 
-| 予測モデルの出力（リスク確率） | 位置づけ |
-|---:|---|
-| 0.870 | 明確に高リスク側にあるケース |
-| 0.622 | 中程度に高リスクなケース |
-| 0.599 | 高リスク判定ではあるが、しきい値に比較的近いケース |
+| 選定基準 | 実際に選ばれた `risk_proba` | 位置づけ |
+|---:|---:|---|
+| 0.8 付近 | 0.870 | 明確に高リスク側にあるケース |
+| 0.6 付近 | 0.599 | 中程度に高リスクなケース |
+| 0.4 付近 | 0.431 | しきい値に比較的近いケース |
 
 ### 結果
-#### 明確に高リスクのケース
+#### 明確に高リスクのケース（risk_proba = 0.870）
 
+|  | リボルビング系与信の利用負担率 | 分割払い系与信の利用負担率 | 残高が残っている取引の比率 | 高利用率状態にある銀行系取引の比率 |
+|---|---:|---:|---:|---:|
+| original | 99.0 | 38.0 | 100.0 | 0.1818 |
+| シナリオ1 | 92.0 | 25.0 | 100.0 | 0.1052 |
+| シナリオ2 | 82.0 | 42.0 | 100.0 | 0.1052 |
+| シナリオ3 | 83.0 | 42.0 | 100.0 | 0.1052 |
 
+##### 解釈
 
+- シナリオ1: 分割払い系与信の利用負担率を下げつつ、高利用率状態にある銀行系取引の比率も抑える案
+- シナリオ2: リボルビング系与信の利用負担率を大きく下げつつ、高利用率状態にある銀行系取引の比率も抑える案
+- シナリオ3: シナリオ2とほぼ同型で、主にリボルビング系与信の利用負担率の圧縮で判定反転を狙う案
 
+#### 中程度に高リスクなケース（risk_proba = 0.599）
 
+|  | リボルビング系与信の利用負担率 | 分割払い系与信の利用負担率 | 残高が残っている取引の比率 | 高利用率状態にある銀行系取引の比率 |
+|---|---:|---:|---:|---:|
+| original | 76.0 | 83.0 | 100.0 | 0.1000 |
+| シナリオ1 | 76.0 | 74.0 | 100.0 | 0.0000 |
+| シナリオ2 | 71.0 | 60.0 | 100.0 | 0.1052 |
+| シナリオ3 | 30.0 | 58.0 | 100.0 | 0.1052 |
 
+##### 解釈
+
+- シナリオ1: 分割払い系与信の利用負担率を少し下げつつ、高利用率状態にある銀行系取引の比率を抑える案
+- シナリオ2: リボルビング系与信の利用負担率と分割払い系与信の利用負担率をともに下げる案
+- シナリオ3: リボルビング系与信の利用負担率を大きく下げつつ、分割払い系与信の利用負担率も下げる案
+
+#### しきい値に比較的近いケース（risk_proba = 0.431）
+
+|  | リボルビング系与信の利用負担率 | 分割払い系与信の利用負担率 | 残高が残っている取引の比率 | 高利用率状態にある銀行系取引の比率 |
+|---|---:|---:|---:|---:|
+| original | 89.0 | 74.0 | 100.0 | 0.1429 |
+| シナリオ1 | 76.0 | 74.0 | 100.0 | 0.1052 |
+| シナリオ2 | 81.0 | 74.0 | 88.0 | 0.1052 |
+
+##### 解釈
+
+- シナリオ1: リボルビング系与信の利用負担率を下げつつ、高利用率状態にある銀行系取引の比率も抑える案
+- シナリオ2: リボルビング系与信の利用負担率を少し下げ、残高が残っている取引の比率も抑える案
