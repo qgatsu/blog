@@ -2,10 +2,10 @@
 title: ロジスティック回帰で与信審査AIを作ってみよう
 tags:
   - 機械学習
-  - 金融
   - XAI
+  - 反実仮想説明
 private: false
-updated_at: '2026-03-31T20:54:42+09:00'
+updated_at: '2026-04-04T20:29:27+09:00'
 id: 2b0f48f3157bc305b099
 organization_url_name: null
 slide: false
