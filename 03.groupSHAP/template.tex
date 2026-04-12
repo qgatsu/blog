@@ -1,0 +1,220 @@
+%!TEX encoding = UTF-8 Unicode
+
+% コンパイラを「XeLaTeX」に設定してください。
+\documentclass{article}
+
+\usepackage{graphicx}
+\usepackage{xeCJK}
+\setCJKmainfont{IPAexMincho}
+\usepackage[backend=biber,style=authoryear]{biblatex}
+\addbibresource{references.bib}
+
+\usepackage[top=50truemm,bottom=20truemm,includefoot]{geometry}
+\usepackage{bm}
+\usepackage{amsmath,amssymb}
+\usepackage{type1cm}
+\usepackage{color}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{array}
+\usepackage{url}
+
+\makeatletter
+\def\@maketitle{%
+\begin{flushright}%
+\end{flushright}%
+\begin{center}%
+{\LARGE \@title \par}%
+\end{center}%
+\begin{flushright}%
+{\large \@author}%
+\end{flushright}%
+\par\vskip 1.5em
+}
+
+\title{\vspace{-3cm}週報 No.2026-01 (03/28~04/03)}
+\author{情報理工学位プログラム 修士２年\\ 学籍番号 202420587 \\氏名：勝田恒平}
+\date{2026年4月3日}
+
+\begin{document}
+\maketitle
+
+\section{今週の課題}
+カテゴリ変数を多く含む表形式データに対してSHAPを適用する場合, one-hot encoding 後の各列に寄与が分散するため, 元の変数単位でどの属性が効いていたかを解釈しづらい．
+特に非技術者へ説明する場面では, one-hot 化されたダミー列ごとの寄与を個別に示すよりも, 「職業」「学歴」「婚姻状態」のような元の概念単位で寄与を示した方が自然である．
+そこで本検討では, UCI Adult (Census Income) データに対してgroupSHAPを適用し, 元特徴グループ単位で予測寄与を整理した．
+
+\section{groupSHAPの数理説明}
+\subsection{基本的な考え方}
+SHAPは, ある予測 $f(x)$ を, 各特徴がどれだけ予測に貢献したかという加法分解で表す考え方に基づく\cite{lundberg2017unified}．
+入力特徴集合を $N=\{1,\dots,M\}$ とし, 部分集合 $S \subseteq N$ のみを観測したときの価値関数を $v(S)$ とすると, 特徴 $i$ のShapley値は
+\[
+\phi_i(x)
+=
+\sum_{S \subseteq N \setminus \{i\}}
+\frac{|S|!(M-|S|-1)!}{M!}
+\left\{v(S \cup \{i\}) - v(S)\right\}
+\]
+で与えられる．
+この式は, 特徴 $i$ をあらゆる順番で追加したときの限界貢献の平均であり, 公平な寄与配分として解釈できる\cite{lundberg2017unified}．
+
+SHAPでは最終的に
+\[
+f(x) = \phi_0 + \sum_{i=1}^{M}\phi_i(x)
+\]
+という加法分解が成り立つ．ここで $\phi_0$ は基準予測, $\phi_i(x)$ は特徴 $i$ の寄与である．
+
+\subsection{groupSHAP}
+groupSHAPでは, 特徴をあらかじめ意味のあるグループへまとめ, グループ単位でShapley値を評価する\cite{jullum2021groupshapley}．
+特徴を
+\[
+\mathcal{G}=\{G_1,\dots,G_K\}, \quad
+G_a \cap G_b = \emptyset \ (a \neq b), \quad
+\bigcup_{k=1}^{K} G_k = N
+\]
+のように分割すると, グループ $G_k$ の寄与は, そのグループをひとつのプレイヤーとみなしたShapley値として定義できる\cite{owen1977values,jullum2021groupshapley}．
+\[
+\Phi_{G_k}(x)
+=
+\sum_{T \subseteq \mathcal{G} \setminus \{G_k\}}
+\frac{|T|!(K-|T|-1)!}{K!}
+\left\{
+v(T \cup \{G_k\}) - v(T)
+\right\}
+\]
+として定義できる．
+ここで $T$ は「どのグループが既に観測されているか」を表す部分集合であり, 追加される単位が単一特徴ではなく特徴群に変わっている点が通常のShapley値との違いである．
+このようなグループ化は, one-hot encoding 後に多数のダミー列へ分かれたカテゴリ変数を, 元の概念に沿って再びまとめ直して解釈する際に有効である\cite{jullum2021groupshapley}．
+
+\subsection{本実験でのgroupSHAP}
+本実験では, one-hot encoding 後の列に対して, 数値特徴は1列1グループ, カテゴリ特徴は元変数ごとに1グループとなるように木構造を定義し, \texttt{PartitionExplainer} によりgroupSHAPを計算した．
+このとき最終的な予測は
+\[
+f(x) = \phi_0 + \sum_{k=1}^{K}\Phi_{G_k}(x)
+\]
+と書ける．
+実験ではこの加法性が数値的にも成立しており, サンプルごとのグループ寄与の総和と説明器の出力との差の最大値は
+\[
+4.44 \times 10^{-16}
+\]
+であった．
+
+\section{実データでの実験}
+\subsection{データ}
+対象データにはUCI Adult (Census Income) データを用いた．
+年齢や労働時間などの個人属性から, 年収が 50K ドルを超えるかどうかを予測する二値分類問題である．
+訓練データは 32,561 件, テストデータは 16,281 件であり, 正例比率は訓練データで 0.2408, テストデータで 0.2362 であった．
+
+説明に用いた元特徴は14個で, 内訳は数値特徴6個, カテゴリ特徴8個である．
+カテゴリ変数を one-hot encoding した結果, 入力次元は108列となった．
+各カテゴリ変数に対応するダミー列数を表\ref{tab:feature_groups}に示す．
+
+\begin{table}[H]
+    \centering
+    \caption{元特徴グループと one-hot encoding 後の列数}
+    \label{tab:feature_groups}
+    \begin{tabular}{lr}
+        \toprule
+        特徴グループ & 列数 \\
+        \midrule
+        age & 1 \\
+        fnlwgt & 1 \\
+        education\_num & 1 \\
+        capital\_gain & 1 \\
+        capital\_loss & 1 \\
+        hours\_per\_week & 1 \\
+        workclass & 9 \\
+        education & 17 \\
+        marital\_status & 7 \\
+        occupation & 15 \\
+        relationship & 6 \\
+        race & 5 \\
+        sex & 2 \\
+        native\_country & 42 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{予測モデル}
+予測モデルにはXGBoost分類器を用いた．
+ハイパーパラメータは, `n\_estimators=200`, `max\_depth=6`, `learning\_rate=0.05`, `subsample=0.8`, `colsample\_bytree=0.8` とした．
+テストデータでの性能は accuracy = 0.8765, ROC-AUC = 0.9277 であり, 正例クラスに対する precision は 0.7890, recall は 0.6513 であった．
+
+\begin{table}[H]
+    \centering
+    \caption{XGBoostベースラインの評価指標}
+    \label{tab:metrics}
+    \begin{tabular}{lr}
+        \toprule
+        指標 & 値 \\
+        \midrule
+        Accuracy & 0.8765 \\
+        ROC-AUC & 0.9277 \\
+        Precision (class 1) & 0.7890 \\
+        Recall (class 1) & 0.6513 \\
+        F1-score (class 1) & 0.7136 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{groupSHAPの計算設定}
+SHAP値の計算には \texttt{TreeExplainer} を用い, テストデータ全16,281件に対して108列分のSHAP値を得た\cite{lundberg2017unified}．
+その後, groupSHAPではカテゴリ列のダミー変数を元変数ごとに束ねるように階層構造を定義し, 背景データ 200 件, 説明対象 1,000 件, \texttt{max\_evals=500} で \texttt{PartitionExplainer} を実行した\cite{jullum2021groupshapley}．
+
+SHAPのbeeswarm図は後で差し替えられるよう, 現状ではプレースホルダの画像URLのみ置いておく．
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.88\linewidth}{
+        \centering
+        SHAP beeswarm plot placeholder\\
+        \url{https://example.com/adult_shap_beeswarm.png}
+    }}
+    \caption{SHAP値の可視化用プレースホルダ}
+    \label{fig:shap_beeswarm_placeholder}
+\end{figure}
+
+\subsection{結果}
+groupSHAPの平均絶対寄与 $\mathrm{mean}(|\Phi_{G_k}|)$ を集計した結果を表\ref{tab:groupshap_result}に示す．
+最も寄与が大きかったのは `marital\_status` であり, 次いで `workclass`, `occupation`, `hours\_per\_week` が続いた．
+数値特徴の `age`, `education\_num`, `capital\_gain` も同程度の寄与を持っており, 収入推定に複数の社会経済的属性が関与していることが分かる．
+
+\begin{table}[H]
+    \centering
+    \caption{groupSHAPによる特徴グループ重要度}
+    \label{tab:groupshap_result}
+    \begin{tabular}{lr}
+        \toprule
+        特徴グループ & mean($|\Phi_{G_k}|$) \\
+        \midrule
+        marital\_status & 0.097692 \\
+        workclass & 0.038883 \\
+        occupation & 0.031954 \\
+        hours\_per\_week & 0.017135 \\
+        fnlwgt & 0.017133 \\
+        age & 0.017133 \\
+        education\_num & 0.017133 \\
+        capital\_gain & 0.017133 \\
+        capital\_loss & 0.017133 \\
+        relationship & 0.016939 \\
+        sex & 0.010965 \\
+        education & 0.007695 \\
+        race & 0.003305 \\
+        native\_country & 0.002151 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+今回の結果では, 婚姻状態や職業, 就業時間のような生活状況を表すグループが比較的大きな寄与を持った．
+また, `native\_country` や `race` など多数のダミー列へ展開される特徴も, groupSHAPによりひとつの概念単位として扱えるため, 変数単位での説明が容易になった．
+
+\section{考察}
+groupSHAPを用いることで, one-hot encoding 後の個別列に分散した寄与を, 元の特徴概念に沿って再構成できた．
+特にAdultデータのようにカテゴリ変数が多い場合, 変数名そのものを説明単位として提示できる点は実務上有用である．
+
+一方で, \texttt{PartitionExplainer} によるgroupSHAPは背景データや評価回数に依存し, 計算コストも大きい\cite{jullum2021groupshapley}．
+また, グループの切り方そのものが分析者の設計判断に依存するため, どの粒度を「説明したい概念」とみなすかを事前に整理しておく必要がある．
+
+\printbibliography[title={参考文献}]
+
+\end{document}
