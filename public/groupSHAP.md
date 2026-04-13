@@ -1,5 +1,5 @@
 ---
-title: groupShapleyを使ってみよう
+title: groupShapleyのすすめ
 tags:
   - 機械学習
   - SHAP
