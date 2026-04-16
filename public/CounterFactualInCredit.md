@@ -5,7 +5,7 @@ tags:
   - XAI
   - 反実仮想説明
 private: false
-updated_at: ''
+updated_at: '2026-04-04T20:29:37+09:00'
 id: 2c4fc0328d4033746ac6
 organization_url_name: null
 slide: false
