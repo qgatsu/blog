@@ -1,11 +1,11 @@
 ---
-title: 効果検証の練習用データを生成してみる
+title: 効果検証入門① 効果検証の練習用データを生成してみる
 tags:
   - 機械学習
   - 因果推論
   - 効果検証
 private: false
-updated_at: '2026-04-14T22:29:00+09:00'
+updated_at: '2026-04-17T16:54:37+09:00'
 id: 2b38b8262c5ce635535b
 organization_url_name: null
 slide: false

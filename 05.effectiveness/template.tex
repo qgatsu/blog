@@ -1,0 +1,151 @@
+%!TEX encoding = UTF-8 Unicode
+
+% コンパイラを「XeLaTeX」に設定してください。
+\documentclass{article}
+
+\usepackage{graphicx}
+\usepackage{xeCJK}
+\setCJKmainfont{IPAexMincho}
+\usepackage[backend=biber,style=authoryear]{biblatex}
+\addbibresource{references.bib}
+
+\usepackage[top=50truemm,bottom=20truemm,includefoot]{geometry}
+\usepackage{bm}
+\usepackage{amsmath,amssymb}
+\usepackage{type1cm}
+\usepackage{color}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{array}
+\usepackage{url}
+
+\makeatletter
+\def\@maketitle{%
+\begin{flushright}%
+\end{flushright}%
+\begin{center}%
+{\LARGE \@title \par}%
+\end{center}%
+\begin{flushright}%
+{\large \@author}%
+\end{flushright}%
+\par\vskip 1.5em
+}
+
+\title{\vspace{-3cm}週報 No.2026-04 (04/18~04/24)}
+\author{情報理工学位プログラム 修士２年\\ 学籍番号 202420587 \\氏名：勝田恒平}
+\date{2026年4月24日}
+
+\begin{document}
+\maketitle
+
+\section{今週の課題}
+実務で介入効果を評価したい場面では，ランダム化比較試験を実施できず，観測データから効果を推定せざるを得ないことが多い．しかし，観測データでは施策の割当が顧客属性に依存していることが多く，単純に介入群と非介入群の平均結果を比較すると交絡によるバイアスが生じる．
+
+本稿では，クーポン配布を想定した合成データを用い，傾向スコアに基づく逆確率重み付け（Inverse Probability Weighting; IPW）によって平均介入効果（Average Treatment Effect; ATE）をどの程度回復できるかを検証する．今回用いたデータには真の個別効果 $\tau_i$ が埋め込まれているため，推定されたATEを真値と直接比較できる．これにより，単純な平均差分とIPW推定量の違いを定量的に確認する．
+
+\section{傾向スコアとIPWの数理説明}
+二値介入 $T \in \{0,1\}$，共変量 $X$，潜在アウトカム $(Y(0), Y(1))$ を考える．傾向スコアは
+\begin{align}
+e(X) = P(T=1 \mid X)
+\end{align}
+で定義される \cite{rosenbaum1983central}．介入の割当が共変量に依存している場合でも，条件付き独立性
+\begin{align}
+(Y(0), Y(1)) \perp T \mid X
+\end{align}
+が成り立つならば，傾向スコアを用いて交絡を調整できる．
+
+もっとも単純なATE推定は，介入群と非介入群の観測アウトカム平均の差
+\begin{align}
+\hat{\tau}_{\mathrm{naive}}
+= E[Y \mid T=1] - E[Y \mid T=0]
+\end{align}
+である．しかし，この量は介入群と非介入群の属性分布が異なると真のATEからずれる．
+
+そこで本稿では，IPW推定量
+\begin{align}
+\hat{\tau}_{\mathrm{IPW}}
+= \frac{1}{n}\sum_{i=1}^{n}
+\left(
+\frac{T_i Y_i}{e(X_i)}
+- \frac{(1-T_i)Y_i}{1-e(X_i)}
+\right)
+\end{align}
+を用いる \cite{horvitz1952generalization}．これは，介入されにくいが実際に介入された個体や，介入されやすいが非介入だった個体に大きな重みを与えることで，擬似的にランダム化された母集団を再構成する考え方である．
+
+実装上は，傾向スコアを機械学習モデルで推定する．今回は説明変数として性別，年齢，最終購買からの日数，購買頻度，購買金額を用い，XGBoost分類器で介入確率を予測した \cite{chen2016xgboost}．また，同じデータで学習と予測を同時に行うと過学習により重みが不安定になるため，5-foldのout-of-fold予測で傾向スコアを作成した．さらに，極端な重みを避けるため，推定傾向スコアは $\varepsilon=10^{-3}$ でクリップした．
+
+\section{実データでの実験}
+分析対象は，クーポン施策を想定した合成データである．サンプル数は50{,}000件で，顧客属性・購買履歴・真の介入率・潜在アウトカム・観測アウトカムを含む12変数から構成される．表\ref{tab:summary}に主な変数の記述統計量を示す．
+
+\begin{table}[ht]
+\centering
+\caption{合成データの記述統計量}
+\label{tab:summary}
+\begin{tabular}{lrrrr}
+\hline
+変数 & 平均 & 標準偏差 & 最小値 & 最大値 \\
+\hline
+age & 30.54 & 9.09 & 18 & 70 \\
+recency & 10.15 & 5.75 & 0 & 30 \\
+frequency & 4.99 & 2.22 & 0 & 19 \\
+amount & 11{,}282.92 & 2{,}081.67 & 1{,}098 & 19{,}019 \\
+treatment\_rate & 0.307 & 0.250 & 0.000 & 0.801 \\
+treatment & 0.309 & 0.462 & 0 & 1 \\
+tau & 957.74 & 551.99 & 0 & 2{,}000 \\
+outcome & 11{,}521.02 & 2{,}157.46 & 732 & 19{,}411 \\
+\hline
+\end{tabular}
+\end{table}
+
+性別の内訳は男性29{,}930件，女性20{,}070件であった．また，真の介入率の平均は0.307，真の個別効果 $\tau_i$ の平均は957.74であり，この値をATEの真値として扱う．
+
+まず，介入群と非介入群の観測アウトカム平均差をそのままATE推定値とした．介入群の平均アウトカムは11{,}978.60，非介入群は11{,}316.39であり，単純差分によるATE推定値は662.21となった．真のATE 957.74と比べると絶対誤差は295.52であり，交絡による過小評価が確認できる．
+
+次に，性別・年齢・recency・frequency・amountを説明変数としてXGBoost分類器を学習し，5-fold out-of-fold予測から傾向スコアを推定した．このときのout-of-fold ROC-AUCは0.8317であり，介入割当の構造を一定程度捉えられていることが分かる．この傾向スコアを用いてIPW推定量を計算すると，ATE推定値は1{,}031.58となり，真値に対する絶対誤差は73.84まで減少した．結果を表\ref{tab:ate_compare}にまとめる．
+
+\begin{table}[ht]
+\centering
+\caption{ATE推定値の比較}
+\label{tab:ate_compare}
+\begin{tabular}{lrr}
+\hline
+手法 & 推定値 & 絶対誤差 \\
+\hline
+単純平均差分 & 662.21 & 295.52 \\
+IPW（XGBoost傾向スコア） & 1{,}031.58 & 73.84 \\
+\hline
+\end{tabular}
+\end{table}
+
+さらに，サンプルサイズを $100, 1{,}000, 5{,}000, 10{,}000, 50{,}000$ と変化させ，真のATEに対する絶対誤差を比較した．この実験では介入率を0.3に固定し，各サンプルサイズごとに単純平均差分とIPWを同様に計算した．結果を表\ref{tab:samplesize}に示す．
+
+\begin{table}[ht]
+\centering
+\caption{サンプルサイズとATE推定誤差}
+\label{tab:samplesize}
+\begin{tabular}{rrr}
+\hline
+サンプルサイズ & 単純平均差分の誤差 & IPWの誤差 \\
+\hline
+100 & 507.77 & 31{,}843.18 \\
+1{,}000 & 611.30 & 2{,}006.76 \\
+5{,}000 & 299.76 & 859.61 \\
+10{,}000 & 372.22 & 446.50 \\
+50{,}000 & 277.99 & 64.47 \\
+\hline
+\end{tabular}
+\end{table}
+
+表\ref{tab:samplesize}より，大標本ではIPWの誤差が大きく改善する一方，小標本では極端な重みによって推定が不安定になり得ることが分かる．特にサンプルサイズ100では，傾向スコア推定の揺らぎがそのまま重みの爆発につながり，単純平均差分より大幅に悪い結果となった．
+
+\section{考察}
+今回の合成データでは，介入の割当が顧客属性に依存しているため，単純な平均差分ではATEを大きく過小評価した．一方で，傾向スコアを用いたIPWは，大標本において真のATEにかなり近い推定値を与えた．これは，傾向スコアによって介入群と非介入群の属性分布のずれを補正できたためと解釈できる．
+
+ただし，IPWは常に優れているわけではない．小標本では傾向スコアの推定誤差が重みに増幅され，推定量の分散が非常に大きくなる．今回もサンプルサイズが小さい条件では，IPWの誤差がむしろ悪化した．そのため，実務でIPWを用いる際には，重みの分布確認，トリミングや安定化重みの導入，共変量バランスの診断が重要になる．
+
+また，本稿では真の個別効果 $\tau_i$ を既知とする合成データを利用したため，推定精度を厳密に評価できた．実データでは真のATEを直接観測できないため，このようなシミュレーション環境で推定法の性質を事前に理解しておくことは有用である．今後は，マッチングや doubly robust 推定量との比較，重みの安定化手法の導入も検討したい．
+
+\printbibliography[title={参考文献}]
+
+\end{document}

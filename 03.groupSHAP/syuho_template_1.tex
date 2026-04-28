@@ -1,0 +1,60 @@
+%!TEX encoding = UTF-8 Unicode
+
+% コンパイラを「XeLaTeX」に設定してください。
+\documentclass{article}
+
+\usepackage{graphicx}
+\usepackage{xeCJK}
+\setCJKmainfont{IPAexMincho}
+\usepackage[backend=biber,style=authoryear]{biblatex}
+\addbibresource{references.bib}
+
+\usepackage[top=50truemm,bottom=20truemm,includefoot]{geometry}
+\usepackage{bm}
+\usepackage{amsmath,amssymb}
+\usepackage{type1cm}
+\usepackage{color}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{array}
+\usepackage{url}
+
+\makeatletter
+\def\@maketitle{%
+\begin{flushright}%
+\end{flushright}%
+\begin{center}%
+{\LARGE \@title \par}%
+\end{center}%
+\begin{flushright}%
+{\large \@author}%
+\end{flushright}%
+\par\vskip 1.5em
+}
+
+\title{\vspace{-3cm}週報 No.XXXX-XX (XX/XX~XX/XX)}
+\author{情報理工学位プログラム 修士２年\\ 学籍番号 202420587 \\氏名：勝田恒平}
+\date{XXXX年X月X日}
+
+\begin{document}
+\maketitle
+
+\section{今週の課題}
+
+\section{背景・手法}
+\subsection{背景}
+
+\subsection{手法}
+
+\section{実験}
+\subsection{データ}
+
+\subsection{実験設定}
+
+\subsection{結果}
+
+\section{考察}
+
+\printbibliography[title={参考文献}]
+
+\end{document}
