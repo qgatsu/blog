@@ -1,0 +1,59 @@
+{
+  "target": "target",
+  "rows": 107472,
+  "period": [
+    "2020-04-08 00:00:00",
+    "2026-05-25 23:30:00"
+  ],
+  "calendar_cols": [
+    "hour",
+    "minute",
+    "dayofweek",
+    "month",
+    "day",
+    "is_weekend",
+    "is_holiday",
+    "is_dayoff"
+  ],
+  "weather_cols": [
+    "temperature_2m",
+    "relative_humidity_2m",
+    "wind_speed_10m",
+    "shortwave_radiation",
+    "precipitation"
+  ],
+  "tepco_cols": [
+    "tepco_demand",
+    "tepco_solar",
+    "tepco_wind",
+    "net_demand",
+    "pv_ratio"
+  ],
+  "lag_cols": [
+    "lag_1d_same_slot",
+    "lag_7d_same_slot",
+    "prev_day_mean",
+    "prev_day_max",
+    "prev_day_min",
+    "prev_day_std",
+    "prev_week_same_dow_mean",
+    "prev_week_same_dow_max",
+    "prev_week_same_dow_min",
+    "prev_week_same_dow_std",
+    "prev_day_band_peak",
+    "prev_day_band_early"
+  ],
+  "target_alt_cols": [
+    "target_log1p",
+    "target_arsinh",
+    "target_diff_1d",
+    "target_diff_7d",
+    "target_dev_prev_day",
+    "target_dev_prev_week"
+  ],
+  "trend_cols": [
+    "trend_30d_mean"
+  ],
+  "log1p_offset": 1.0,
+  "leak_policy": "day-ahead: features at date D use only data with date <= D-1 (TEPCO/weather actuals at t are treated as forecast-known proxies)"
+}
