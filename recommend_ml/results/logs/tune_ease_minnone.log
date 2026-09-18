@@ -1,0 +1,18 @@
+/home/kohei/WorkSpace/blog/recommend_ml/src/recommend_ml/tune.py:111: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  pd.concat([previous, frame_final])
+model=ease combinations=8 select_by=ndcg@10
+[1/8] {'regularization': 1} -> ndcg@10=0.0353 hr@100=0.3103 (2.1s)
+[2/8] {'regularization': 10} -> ndcg@10=0.0421 hr@100=0.3623 (1.5s)
+[3/8] {'regularization': 50} -> ndcg@10=0.0461 hr@100=0.4136 (1.7s)
+[4/8] {'regularization': 100} -> ndcg@10=0.0478 hr@100=0.4339 (1.8s)
+[5/8] {'regularization': 250} -> ndcg@10=0.0492 hr@100=0.4601 (1.5s)
+[6/8] {'regularization': 500} -> ndcg@10=0.0488 hr@100=0.4667 (1.7s)
+[7/8] {'regularization': 1000} -> ndcg@10=0.0471 hr@100=0.4652 (1.5s)
+[8/8] {'regularization': 2000} -> ndcg@10=0.0454 hr@100=0.4536 (1.6s)
+
+best on valid: {'regularization': 250} ndcg@10=0.0492
+ease           valid hr@10=0.1023 ndcg@10=0.0492 hr@20=0.1710 ndcg@20=0.0665 hr@100=0.4601 ndcg@100=0.1185 mrr=0.0465
+ease           test  hr@10=0.0992 ndcg@10=0.0485 hr@20=0.1661 ndcg@20=0.0653 hr@100=0.4333 ndcg@100=0.1131 mrr=0.0458
+
+saved -> /home/kohei/WorkSpace/blog/recommend_ml/results/tuning_ease_minNone.csv
+saved -> /home/kohei/WorkSpace/blog/recommend_ml/results/results.csv

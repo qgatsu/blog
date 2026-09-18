@@ -1,0 +1,14 @@
+/home/kohei/WorkSpace/blog/recommend_ml/src/recommend_ml/tune.py:111: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  pd.concat([previous, frame_final])
+model=bpr combinations=4 select_by=ndcg@10
+[1/4] {'epochs': 200, 'factors': 256, 'learning_rate': 0.05, 'regularization': 0.001} -> ndcg@10=0.0450 hr@100=0.4182 (79.4s)
+[2/4] {'epochs': 200, 'factors': 512, 'learning_rate': 0.05, 'regularization': 0.001} -> ndcg@10=0.0453 hr@100=0.4346 (146.0s)
+[3/4] {'epochs': 400, 'factors': 256, 'learning_rate': 0.05, 'regularization': 0.001} -> ndcg@10=0.0422 hr@100=0.4199 (152.1s)
+[4/4] {'epochs': 400, 'factors': 512, 'learning_rate': 0.05, 'regularization': 0.001} -> ndcg@10=0.0466 hr@100=0.4424 (288.7s)
+
+best on valid: {'factors': 512, 'learning_rate': 0.05, 'regularization': 0.001, 'epochs': 400} ndcg@10=0.0466
+bpr            valid hr@10=0.0974 ndcg@10=0.0466 hr@20=0.1647 ndcg@20=0.0635 hr@100=0.4424 ndcg@100=0.1132 mrr=0.0442
+bpr            test  hr@10=0.0836 ndcg@10=0.0417 hr@20=0.1470 ndcg@20=0.0576 hr@100=0.4108 ndcg@100=0.1050 mrr=0.0415
+
+saved -> /home/kohei/WorkSpace/blog/recommend_ml/results/tuning_bpr_minNone.csv
+saved -> /home/kohei/WorkSpace/blog/recommend_ml/results/results.csv

@@ -1,3 +1,16 @@
 .remote
 node_modules
 *.csv.gz
+
+# 牌譜データ（大容量・再配布しない）
+08.mahjong/data/
+*.mjson
+*.mjson.gz
+
+# Python
+__pycache__/
+*.pyc
+
+# MovieLens データ（GroupLens の利用条件で再配布不可）
+02.KnowledgeGraph_Recommendation/data/
+recommend_ml/data/

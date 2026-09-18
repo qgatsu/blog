@@ -1,0 +1,66 @@
+===== als min_rating=none =====
+model=als min_rating=none -> results/logs/tune_als_minnone.log
+/home/kohei/WorkSpace/blog/recommend_ml/src/recommend_ml/tune.py:111: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  pd.concat([previous, frame_final])
+model=als combinations=24 select_by=ndcg@10
+[1/24] {'alpha': 0.1, 'factors': 128, 'regularization': 0.001} -> ndcg@10=0.0472 hr@100=0.4371 (113.0s)
+[2/24] {'alpha': 0.1, 'factors': 128, 'regularization': 0.01} -> ndcg@10=0.0471 hr@100=0.4373 (119.9s)
+[3/24] {'alpha': 0.1, 'factors': 128, 'regularization': 0.1} -> ndcg@10=0.0472 hr@100=0.4373 (138.9s)
+[4/24] {'alpha': 0.1, 'factors': 128, 'regularization': 1.0} -> ndcg@10=0.0475 hr@100=0.4381 (145.8s)
+[5/24] {'alpha': 0.1, 'factors': 256, 'regularization': 0.001} -> ndcg@10=0.0446 hr@100=0.3897 (293.3s)
+[6/24] {'alpha': 0.1, 'factors': 256, 'regularization': 0.01} -> ndcg@10=0.0446 hr@100=0.3897 (311.2s)
+[7/24] {'alpha': 0.1, 'factors': 256, 'regularization': 0.1} -> ndcg@10=0.0446 hr@100=0.3899 (305.2s)
+[8/24] {'alpha': 0.1, 'factors': 256, 'regularization': 1.0} -> ndcg@10=0.0449 hr@100=0.3935 (320.7s)
+[9/24] {'alpha': 0.5, 'factors': 128, 'regularization': 0.001} -> ndcg@10=0.0473 hr@100=0.4444 (162.5s)
+[10/24] {'alpha': 0.5, 'factors': 128, 'regularization': 0.01} -> ndcg@10=0.0473 hr@100=0.4445 (187.3s)
+[11/24] {'alpha': 0.5, 'factors': 128, 'regularization': 0.1} -> ndcg@10=0.0471 hr@100=0.4442 (111.8s)
+[12/24] {'alpha': 0.5, 'factors': 128, 'regularization': 1.0} -> ndcg@10=0.0469 hr@100=0.4439 (147.6s)
+[13/24] {'alpha': 0.5, 'factors': 256, 'regularization': 0.001} -> ndcg@10=0.0456 hr@100=0.3937 (299.3s)
+[14/24] {'alpha': 0.5, 'factors': 256, 'regularization': 0.01} -> ndcg@10=0.0456 hr@100=0.3937 (295.0s)
+[15/24] {'alpha': 0.5, 'factors': 256, 'regularization': 0.1} -> ndcg@10=0.0456 hr@100=0.3944 (319.7s)
+[16/24] {'alpha': 0.5, 'factors': 256, 'regularization': 1.0} -> ndcg@10=0.0457 hr@100=0.3980 (383.0s)
+[17/24] {'alpha': 1.0, 'factors': 128, 'regularization': 0.001} -> ndcg@10=0.0456 hr@100=0.4474 (218.9s)
+[18/24] {'alpha': 1.0, 'factors': 128, 'regularization': 0.01} -> ndcg@10=0.0455 hr@100=0.4474 (286.3s)
+[19/24] {'alpha': 1.0, 'factors': 128, 'regularization': 0.1} -> ndcg@10=0.0456 hr@100=0.4480 (213.6s)
+[20/24] {'alpha': 1.0, 'factors': 128, 'regularization': 1.0} -> ndcg@10=0.0459 hr@100=0.4490 (169.2s)
+[21/24] {'alpha': 1.0, 'factors': 256, 'regularization': 0.001} -> ndcg@10=0.0462 hr@100=0.3959 (545.8s)
+[22/24] {'alpha': 1.0, 'factors': 256, 'regularization': 0.01} -> ndcg@10=0.0462 hr@100=0.3960 (504.5s)
+[23/24] {'alpha': 1.0, 'factors': 256, 'regularization': 0.1} -> ndcg@10=0.0461 hr@100=0.3964 (514.3s)
+[24/24] {'alpha': 1.0, 'factors': 256, 'regularization': 1.0} -> ndcg@10=0.0463 hr@100=0.3998 (502.3s)
+
+best on valid: {'factors': 128, 'regularization': 1.0, 'alpha': 0.1} ndcg@10=0.0475
+als            valid hr@10=0.0975 ndcg@10=0.0475 hr@20=0.1634 ndcg@20=0.0639 hr@100=0.4381 ndcg@100=0.1134 mrr=0.0450
+als            test  hr@10=0.0916 ndcg@10=0.0458 hr@20=0.1541 ndcg@20=0.0614 hr@100=0.4144 ndcg@100=0.1080 mrr=0.0440
+
+saved -> /home/kohei/WorkSpace/blog/recommend_ml/results/tuning_als_minNone.csv
+saved -> /home/kohei/WorkSpace/blog/recommend_ml/results/results.csv
+===== bpr min_rating=none =====
+model=bpr min_rating=none -> results/logs/tune_bpr_minnone.log
+/home/kohei/WorkSpace/blog/recommend_ml/src/recommend_ml/tune.py:111: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  pd.concat([previous, frame_final])
+model=bpr combinations=16 select_by=ndcg@10
+[1/16] {'epochs': 100, 'factors': 128, 'learning_rate': 0.05, 'regularization': 0.0001} -> ndcg@10=0.0367 hr@100=0.3553 (24.3s)
+[2/16] {'epochs': 100, 'factors': 128, 'learning_rate': 0.05, 'regularization': 0.001} -> ndcg@10=0.0404 hr@100=0.4003 (23.1s)
+[3/16] {'epochs': 100, 'factors': 128, 'learning_rate': 0.1, 'regularization': 0.0001} -> ndcg@10=0.0272 hr@100=0.2868 (23.6s)
+[4/16] {'epochs': 100, 'factors': 128, 'learning_rate': 0.1, 'regularization': 0.001} -> ndcg@10=0.0375 hr@100=0.3599 (23.5s)
+[5/16] {'epochs': 100, 'factors': 256, 'learning_rate': 0.05, 'regularization': 0.0001} -> ndcg@10=0.0335 hr@100=0.3452 (38.4s)
+[6/16] {'epochs': 100, 'factors': 256, 'learning_rate': 0.05, 'regularization': 0.001} -> ndcg@10=0.0417 hr@100=0.4156 (38.2s)
+[7/16] {'epochs': 100, 'factors': 256, 'learning_rate': 0.1, 'regularization': 0.0001} -> ndcg@10=0.0275 hr@100=0.2730 (38.1s)
+[8/16] {'epochs': 100, 'factors': 256, 'learning_rate': 0.1, 'regularization': 0.001} -> ndcg@10=0.0361 hr@100=0.3712 (37.8s)
+[9/16] {'epochs': 200, 'factors': 128, 'learning_rate': 0.05, 'regularization': 0.0001} -> ndcg@10=0.0320 hr@100=0.3387 (46.4s)
+[10/16] {'epochs': 200, 'factors': 128, 'learning_rate': 0.05, 'regularization': 0.001} -> ndcg@10=0.0389 hr@100=0.4012 (46.3s)
+[11/16] {'epochs': 200, 'factors': 128, 'learning_rate': 0.1, 'regularization': 0.0001} -> ndcg@10=0.0269 hr@100=0.2854 (46.1s)
+[12/16] {'epochs': 200, 'factors': 128, 'learning_rate': 0.1, 'regularization': 0.001} -> ndcg@10=0.0373 hr@100=0.3512 (56.4s)
+[13/16] {'epochs': 200, 'factors': 256, 'learning_rate': 0.05, 'regularization': 0.0001} -> ndcg@10=0.0324 hr@100=0.3353 (89.7s)
+[14/16] {'epochs': 200, 'factors': 256, 'learning_rate': 0.05, 'regularization': 0.001} -> ndcg@10=0.0450 hr@100=0.4182 (83.8s)
+[15/16] {'epochs': 200, 'factors': 256, 'learning_rate': 0.1, 'regularization': 0.0001} -> ndcg@10=0.0261 hr@100=0.2803 (85.6s)
+[16/16] {'epochs': 200, 'factors': 256, 'learning_rate': 0.1, 'regularization': 0.001} -> ndcg@10=0.0373 hr@100=0.3669 (74.8s)
+
+best on valid: {'factors': 256, 'learning_rate': 0.05, 'regularization': 0.001, 'epochs': 200} ndcg@10=0.0450
+bpr            valid hr@10=0.0914 ndcg@10=0.0450 hr@20=0.1561 ndcg@20=0.0612 hr@100=0.4182 ndcg@100=0.1081 mrr=0.0434
+bpr            test  hr@10=0.0859 ndcg@10=0.0420 hr@20=0.1498 ndcg@20=0.0580 hr@100=0.3881 ndcg@100=0.1007 mrr=0.0406
+
+saved -> /home/kohei/WorkSpace/blog/recommend_ml/results/tuning_bpr_minNone.csv
+saved -> /home/kohei/WorkSpace/blog/recommend_ml/results/results.csv
+===== als min_rating=3 =====
+model=als min_rating=3 -> results/logs/tune_als_min3.log

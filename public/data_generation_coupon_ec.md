@@ -10,6 +10,8 @@ id: 2b38b8262c5ce635535b
 organization_url_name: null
 slide: false
 ignorePublish: false
+posting_campaign_uuid: null
+agreed_posting_campaign_term: false
 ---
 
 # 注意書き

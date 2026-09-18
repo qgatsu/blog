@@ -1,0 +1,34 @@
+
+=== items=375 users=6037 interactions=441499 ===
+most_popular   fit=   0.000s score=  0.001s model=   0.001MB hr@10=0.0658
+item_knn       fit=   0.056s score=  0.014s model=   0.536MB hr@10=0.1004
+ease           fit=   0.064s score=  0.019s model=   0.536MB hr@10=0.2355
+als            fit=   4.005s score=  0.005s model=   3.131MB hr@10=0.2279
+
+=== items=750 users=6040 interactions=649580 ===
+most_popular   fit=   0.000s score=  0.001s model=   0.003MB hr@10=0.0495
+item_knn       fit=   0.123s score=  0.040s model=   2.146MB hr@10=0.0791
+ease           fit=   0.129s score=  0.055s model=   2.146MB hr@10=0.1659
+als            fit=   4.977s score=  0.016s model=   3.315MB hr@10=0.1517
+
+=== items=1500 users=6040 interactions=863910 ===
+most_popular   fit=   0.000s score=  0.002s model=   0.006MB hr@10=0.0391
+item_knn       fit=   0.263s score=  0.140s model=   8.583MB hr@10=0.0666
+ease           fit=   0.286s score=  0.128s model=   8.583MB hr@10=0.1164
+als            fit=   5.985s score=  0.024s model=   3.682MB hr@10=0.1053
+
+=== items=3000 users=6040 interactions=988581 ===
+most_popular   fit=   0.001s score=  0.009s model=   0.011MB hr@10=0.0358
+item_knn       fit=   0.652s score=  0.406s model=  34.332MB hr@10=0.0624
+ease           fit=   1.490s score=  0.420s model=  34.332MB hr@10=0.1003
+als            fit=   7.039s score=  0.053s model=   4.414MB hr@10=0.0889
+
+=== アイテム数に対するべき指数 (log-log の傾き) ===
+model               fit   model_size
+most_popular       0.11         1.14
+item_knn           1.17         2.00
+ease               1.48         2.00
+als                0.27         0.16
+
+saved -> /home/kohei/WorkSpace/blog/recommend_ml/results/scaling.csv
+===== スケーリング測定 完了 =====

@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./scripts/tune.sh:*)",
+      "Bash(./scripts/run.sh:*)",
+      "Bash(./scripts/report.sh:*)",
+      "Bash(./scripts/status.sh:*)",
+      "Bash(tail:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Read(//home/kohei/WorkSpace/blog/recommend_ml/**)"
+    ]
+  }
+}

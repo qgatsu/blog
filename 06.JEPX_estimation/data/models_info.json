@@ -1,0 +1,14 @@
+{
+  "era5_actual_point_iter": 679,
+  "era5_actual_coverage80_test": 71.03603603603604,
+  "era5_actual_interval_width_test": 9.32990832449362,
+  "analysis_point_iter": 955,
+  "analysis_coverage80_test": 69.5945945945946,
+  "analysis_interval_width_test": 8.770774565819176,
+  "fc_weather_point_iter": 901,
+  "fc_weather_coverage80_test": 70.27027027027027,
+  "fc_weather_interval_width_test": 8.875996088800253,
+  "gateclose_point_iter": 704,
+  "gateclose_coverage80_test": 74.4481981981982,
+  "gateclose_interval_width_test": 9.5792360857966
+}

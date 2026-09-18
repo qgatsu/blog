@@ -1,0 +1,26 @@
+/home/kohei/WorkSpace/blog/recommend_ml/src/recommend_ml/tune.py:111: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  pd.concat([previous, frame_final])
+model=bpr combinations=16 select_by=ndcg@10
+[1/16] {'epochs': 100, 'factors': 128, 'learning_rate': 0.05, 'regularization': 0.0001} -> ndcg@10=0.0367 hr@100=0.3553 (24.3s)
+[2/16] {'epochs': 100, 'factors': 128, 'learning_rate': 0.05, 'regularization': 0.001} -> ndcg@10=0.0404 hr@100=0.4003 (23.1s)
+[3/16] {'epochs': 100, 'factors': 128, 'learning_rate': 0.1, 'regularization': 0.0001} -> ndcg@10=0.0272 hr@100=0.2868 (23.6s)
+[4/16] {'epochs': 100, 'factors': 128, 'learning_rate': 0.1, 'regularization': 0.001} -> ndcg@10=0.0375 hr@100=0.3599 (23.5s)
+[5/16] {'epochs': 100, 'factors': 256, 'learning_rate': 0.05, 'regularization': 0.0001} -> ndcg@10=0.0335 hr@100=0.3452 (38.4s)
+[6/16] {'epochs': 100, 'factors': 256, 'learning_rate': 0.05, 'regularization': 0.001} -> ndcg@10=0.0417 hr@100=0.4156 (38.2s)
+[7/16] {'epochs': 100, 'factors': 256, 'learning_rate': 0.1, 'regularization': 0.0001} -> ndcg@10=0.0275 hr@100=0.2730 (38.1s)
+[8/16] {'epochs': 100, 'factors': 256, 'learning_rate': 0.1, 'regularization': 0.001} -> ndcg@10=0.0361 hr@100=0.3712 (37.8s)
+[9/16] {'epochs': 200, 'factors': 128, 'learning_rate': 0.05, 'regularization': 0.0001} -> ndcg@10=0.0320 hr@100=0.3387 (46.4s)
+[10/16] {'epochs': 200, 'factors': 128, 'learning_rate': 0.05, 'regularization': 0.001} -> ndcg@10=0.0389 hr@100=0.4012 (46.3s)
+[11/16] {'epochs': 200, 'factors': 128, 'learning_rate': 0.1, 'regularization': 0.0001} -> ndcg@10=0.0269 hr@100=0.2854 (46.1s)
+[12/16] {'epochs': 200, 'factors': 128, 'learning_rate': 0.1, 'regularization': 0.001} -> ndcg@10=0.0373 hr@100=0.3512 (56.4s)
+[13/16] {'epochs': 200, 'factors': 256, 'learning_rate': 0.05, 'regularization': 0.0001} -> ndcg@10=0.0324 hr@100=0.3353 (89.7s)
+[14/16] {'epochs': 200, 'factors': 256, 'learning_rate': 0.05, 'regularization': 0.001} -> ndcg@10=0.0450 hr@100=0.4182 (83.8s)
+[15/16] {'epochs': 200, 'factors': 256, 'learning_rate': 0.1, 'regularization': 0.0001} -> ndcg@10=0.0261 hr@100=0.2803 (85.6s)
+[16/16] {'epochs': 200, 'factors': 256, 'learning_rate': 0.1, 'regularization': 0.001} -> ndcg@10=0.0373 hr@100=0.3669 (74.8s)
+
+best on valid: {'factors': 256, 'learning_rate': 0.05, 'regularization': 0.001, 'epochs': 200} ndcg@10=0.0450
+bpr            valid hr@10=0.0914 ndcg@10=0.0450 hr@20=0.1561 ndcg@20=0.0612 hr@100=0.4182 ndcg@100=0.1081 mrr=0.0434
+bpr            test  hr@10=0.0859 ndcg@10=0.0420 hr@20=0.1498 ndcg@20=0.0580 hr@100=0.3881 ndcg@100=0.1007 mrr=0.0406
+
+saved -> /home/kohei/WorkSpace/blog/recommend_ml/results/tuning_bpr_minNone.csv
+saved -> /home/kohei/WorkSpace/blog/recommend_ml/results/results.csv

@@ -1,0 +1,60 @@
+===== 1. bpr 全評価 (さらに拡張) =====
+/home/kohei/WorkSpace/blog/recommend_ml/src/recommend_ml/tune.py:111: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  pd.concat([previous, frame_final])
+model=bpr combinations=4 select_by=ndcg@10
+[1/4] {'epochs': 200, 'factors': 256, 'learning_rate': 0.05, 'regularization': 0.001} -> ndcg@10=0.0450 hr@100=0.4182 (79.4s)
+[2/4] {'epochs': 200, 'factors': 512, 'learning_rate': 0.05, 'regularization': 0.001} -> ndcg@10=0.0453 hr@100=0.4346 (146.0s)
+[3/4] {'epochs': 400, 'factors': 256, 'learning_rate': 0.05, 'regularization': 0.001} -> ndcg@10=0.0422 hr@100=0.4199 (152.1s)
+[4/4] {'epochs': 400, 'factors': 512, 'learning_rate': 0.05, 'regularization': 0.001} -> ndcg@10=0.0466 hr@100=0.4424 (288.7s)
+
+best on valid: {'factors': 512, 'learning_rate': 0.05, 'regularization': 0.001, 'epochs': 400} ndcg@10=0.0466
+bpr            valid hr@10=0.0974 ndcg@10=0.0466 hr@20=0.1647 ndcg@20=0.0635 hr@100=0.4424 ndcg@100=0.1132 mrr=0.0442
+bpr            test  hr@10=0.0836 ndcg@10=0.0417 hr@20=0.1470 ndcg@20=0.0576 hr@100=0.4108 ndcg@100=0.1050 mrr=0.0415
+
+saved -> /home/kohei/WorkSpace/blog/recommend_ml/results/tuning_bpr_minNone.csv
+saved -> /home/kohei/WorkSpace/blog/recommend_ml/results/results.csv
+===== 2. als rating>=3 =====
+/home/kohei/WorkSpace/blog/recommend_ml/src/recommend_ml/tune.py:111: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  pd.concat([previous, frame_final])
+model=als combinations=18 select_by=ndcg@10
+[1/18] {'alpha': 0.1, 'factors': 64, 'regularization': 0.01} -> ndcg@10=0.0462 hr@100=0.4419 (13.0s)
+[2/18] {'alpha': 0.1, 'factors': 64, 'regularization': 0.1} -> ndcg@10=0.0462 hr@100=0.4419 (15.2s)
+[3/18] {'alpha': 0.1, 'factors': 64, 'regularization': 1.0} -> ndcg@10=0.0460 hr@100=0.4434 (13.0s)
+[4/18] {'alpha': 0.1, 'factors': 128, 'regularization': 0.01} -> ndcg@10=0.0472 hr@100=0.4159 (35287.7s)
+[5/18] {'alpha': 0.1, 'factors': 128, 'regularization': 0.1} -> ndcg@10=0.0472 hr@100=0.4159 (140.5s)
+[6/18] {'alpha': 0.1, 'factors': 128, 'regularization': 1.0} -> ndcg@10=0.0474 hr@100=0.4197 (121.5s)
+[7/18] {'alpha': 0.5, 'factors': 64, 'regularization': 0.01} -> ndcg@10=0.0464 hr@100=0.4508 (6.9s)
+[8/18] {'alpha': 0.5, 'factors': 64, 'regularization': 0.1} -> ndcg@10=0.0465 hr@100=0.4513 (7.0s)
+[9/18] {'alpha': 0.5, 'factors': 64, 'regularization': 1.0} -> ndcg@10=0.0465 hr@100=0.4523 (6.9s)
+[10/18] {'alpha': 0.5, 'factors': 128, 'regularization': 0.01} -> ndcg@10=0.0476 hr@100=0.4250 (110.4s)
+[11/18] {'alpha': 0.5, 'factors': 128, 'regularization': 0.1} -> ndcg@10=0.0475 hr@100=0.4255 (128.4s)
+[12/18] {'alpha': 0.5, 'factors': 128, 'regularization': 1.0} -> ndcg@10=0.0475 hr@100=0.4271 (115.1s)
+[13/18] {'alpha': 1.0, 'factors': 64, 'regularization': 0.01} -> ndcg@10=0.0459 hr@100=0.4535 (6.9s)
+[14/18] {'alpha': 1.0, 'factors': 64, 'regularization': 0.1} -> ndcg@10=0.0460 hr@100=0.4545 (7.0s)
+[15/18] {'alpha': 1.0, 'factors': 64, 'regularization': 1.0} -> ndcg@10=0.0459 hr@100=0.4553 (6.9s)
+[16/18] {'alpha': 1.0, 'factors': 128, 'regularization': 0.01} -> ndcg@10=0.0465 hr@100=0.4341 (112.4s)
+[17/18] {'alpha': 1.0, 'factors': 128, 'regularization': 0.1} -> ndcg@10=0.0461 hr@100=0.4351 (146.3s)
+[18/18] {'alpha': 1.0, 'factors': 128, 'regularization': 1.0} -> ndcg@10=0.0461 hr@100=0.4351 (106.3s)
+
+best on valid: {'factors': 128, 'regularization': 0.01, 'alpha': 0.5} ndcg@10=0.0476
+als            valid hr@10=0.0990 ndcg@10=0.0476 hr@20=0.1600 ndcg@20=0.0629 hr@100=0.4250 ndcg@100=0.1106 mrr=0.0443
+als            test  hr@10=0.0921 ndcg@10=0.0447 hr@20=0.1509 ndcg@20=0.0594 hr@100=0.4082 ndcg@100=0.1057 mrr=0.0423
+
+saved -> /home/kohei/WorkSpace/blog/recommend_ml/results/tuning_als_min3.csv
+saved -> /home/kohei/WorkSpace/blog/recommend_ml/results/results.csv
+===== 3. bpr rating>=3 =====
+/home/kohei/WorkSpace/blog/recommend_ml/src/recommend_ml/tune.py:111: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  pd.concat([previous, frame_final])
+model=bpr combinations=4 select_by=ndcg@10
+[1/4] {'epochs': 100, 'factors': 128, 'learning_rate': 0.05, 'regularization': 0.001} -> ndcg@10=0.0414 hr@100=0.3965 (21.2s)
+[2/4] {'epochs': 100, 'factors': 256, 'learning_rate': 0.05, 'regularization': 0.001} -> ndcg@10=0.0426 hr@100=0.4248 (32.5s)
+[3/4] {'epochs': 200, 'factors': 128, 'learning_rate': 0.05, 'regularization': 0.001} -> ndcg@10=0.0426 hr@100=0.4008 (38.8s)
+[4/4] {'epochs': 200, 'factors': 256, 'learning_rate': 0.05, 'regularization': 0.001} -> ndcg@10=0.0413 hr@100=0.4159 (62.7s)
+
+best on valid: {'factors': 128, 'learning_rate': 0.05, 'regularization': 0.001, 'epochs': 200} ndcg@10=0.0426
+bpr            valid hr@10=0.0881 ndcg@10=0.0426 hr@20=0.1484 ndcg@20=0.0577 hr@100=0.4008 ndcg@100=0.1029 mrr=0.0408
+bpr            test  hr@10=0.0788 ndcg@10=0.0392 hr@20=0.1338 ndcg@20=0.0530 hr@100=0.3910 ndcg@100=0.0989 mrr=0.0388
+
+saved -> /home/kohei/WorkSpace/blog/recommend_ml/results/tuning_bpr_min3.csv
+saved -> /home/kohei/WorkSpace/blog/recommend_ml/results/results.csv
+===== 残りの探索 完了 =====
